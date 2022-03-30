@@ -1,29 +1,45 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import { useRecoilState } from 'recoil'
 import { searchState } from '../../atoms/searchAtom'
+import Card from '../../components/card'
 import { searchArticle } from '../../service/httpClient'
+import { HashLoader } from 'react-spinners'
 
 export default function Search() {
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useRecoilState(searchState)
+  const [articles, setArticles] = useState([])
+  const [lengthFound, setLengthFound] = useState(0)
 
   useEffect(() => {
     console.log(search);
-    searchArticle(search)
-  },[])
+    setIsLoading(true)
+    if (search !== '') {
+      searchArticle(search)
+        .then(res => {
+          setArticles(res.data.data)
+          setLengthFound(res.data.data.length)
+          setIsLoading(false)
+        })
+    }
+  }, [])
 
   const handleSearch = e => {
     e.preventDefault()
-    searchArticle(search).then(res => {
-      console.log(res.data);
-      setIsLoading(false)
-    })
+    setIsLoading(true)
+    if (search !== '') {
+      searchArticle(search)
+        .then(res => {
+          setArticles(res.data.data)
+          setLengthFound(res.data.data.length)
+          setIsLoading(false)
+        })
+    }
   }
 
   return (
-    <div className='h-screen'>
+    <div className='App'>
       {/* Navbar */}
       <nav className='bg-white text-gray-700 hover:text-lime-400 px-2 py-4 rounded h-20 sticky top-0 z-50 shadow'>
         <div className="container flex flex-wrap justify-between items-center mx-auto">
@@ -55,6 +71,34 @@ export default function Search() {
           </ul>
         </div>
       </nav>
+
+      {/* Results */}
+      <section className='container mx-auto px-2'>
+        {
+          isLoading ?
+            (
+              <div className="flex h-[500px] align-middle justify-center items-center">
+                <HashLoader color={`#84CC16`} size={150}/>
+              </div>
+            )
+            :
+            (
+              <><h3 className='font-semibold text-lg my-5'>Ditemukan {lengthFound} data!</h3><div className='flex flex-col items-center justify-center space-y-4'>
+                {articles.map((article, index) => {
+                  return (
+                    <div className='w-[800px]' key={index}>
+                      <div className='h-48 p-6 bg-white rounded-lg border border-gray-200 shadow hover:bg-gray-100'>
+                        <h1 className='font-bold text-lime-500 text-[2rem] truncate w-[590px] h-auto'>{article.title}</h1>
+                        <h3 className='font-normal text-base'>{article.author}</h3>
+                        <p className='text-gray-400 font-bold'>{article.year}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div></>
+            )
+        }
+      </section>
     </div>
   )
 }
