@@ -8,12 +8,24 @@ export const getUser = async () => {
   return await getBaseAPI().get('/users/get-user');
 }
 
-export const createUser = async () => {
-  return await getBaseAPI.post('/login/register');
+export const createUser = async (nama, email, password, passwordConf) => {
+  return await getBaseAPI.post('/login/register', {
+    name: nama,
+    email: email,
+    password: password,
+    passwordConf: passwordConf
+  });
 }
 
-export const loginUser = async () => {
-  return await getBaseAPI.post('/login/signin');
+export const loginUser = async (email, password) => {
+  return await getBaseAPI.post('/login/signin', {
+    email: email,
+    password: password
+  });
+}
+
+export const logoutUser = async () => {
+  return await getBaseAPI.post('/login/signout');
 }
 
 export const updateUser = async id => {

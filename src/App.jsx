@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useRecoilState } from 'recoil'
+import { Link } from 'react-router-dom';
 import moment from 'moment'
 import { searchState } from '../atoms/searchAtom';
 function App() {
@@ -21,14 +22,14 @@ function App() {
           </h3>
           <ul className="flex justify-between items-center font-semibold">
             <li className="mr-4">
-              <a href="#" className="text-gray-700 hover:text-lime-400 transition-all transform">
+              <Link to='/login' className="text-gray-700 hover:text-lime-400 transition-all transform">
                 Masuk
-              </a>
+              </Link>
             </li>
             <li className="mr-4">
-              <a href="#" className="text-gray-700 hover:text-lime-400 transition-all transform">
+              <Link to='/register' className="text-gray-700 hover:text-lime-400 transition-all transform">
                 Daftar
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

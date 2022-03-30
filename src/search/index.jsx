@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useRecoilState } from 'recoil'
 import { searchState } from '../../atoms/searchAtom'
-import Card from '../../components/card'
 import { searchArticle } from '../../service/httpClient'
 import { HashLoader } from 'react-spinners'
 
@@ -59,14 +58,14 @@ export default function Search() {
           </div>
           <ul className="flex justify-between items-center font-semibold">
             <li className="mr-4">
-              <a href="#" className="text-gray-700 hover:text-lime-400 transition-all transform">
+              <Link to='/login' className="text-gray-700 hover:text-lime-400 transition-all transform">
                 Masuk
-              </a>
+              </Link>
             </li>
             <li className="mr-4">
-              <a href="#" className="text-gray-700 hover:text-lime-400 transition-all transform">
+              <Link to='/register' className="text-gray-700 hover:text-lime-400 transition-all transform">
                 Daftar
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -78,24 +77,42 @@ export default function Search() {
           isLoading ?
             (
               <div className="flex h-[500px] align-middle justify-center items-center">
-                <HashLoader color={`#84CC16`} size={150}/>
+                <HashLoader color={`#84CC16`} size={150} />
               </div>
             )
             :
             (
-              <><h3 className='font-semibold text-lg my-5'>Ditemukan {lengthFound} data!</h3><div className='flex flex-col items-center justify-center space-y-4'>
-                {articles.map((article, index) => {
-                  return (
-                    <div className='w-[800px]' key={index}>
-                      <div className='h-48 p-6 bg-white rounded-lg border border-gray-200 shadow hover:bg-gray-100'>
-                        <h1 className='font-bold text-lime-500 text-[2rem] truncate w-[590px] h-auto'>{article.title}</h1>
-                        <h3 className='font-normal text-base'>{article.author}</h3>
-                        <p className='text-gray-400 font-bold'>{article.year}</p>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div></>
+              <>
+                {
+                  lengthFound > 0 ?
+                    (
+                      <>
+                        <h3 className='font-semibold text-xl my-5'>Ditemukan {lengthFound} data!</h3>
+                        <div className='flex flex-col items-center justify-center space-y-4'>
+                          {articles.map((article) => {
+                            return (
+                              <div className='w-[800px]' key={article.id}>
+                                <div className='h-48 p-6 bg-white rounded-lg border border-gray-200 shadow hover:bg-gray-100 hover:cursor-pointer'>
+                                  <h1 className='font-bold text-lime-500 text-[2rem] truncate w-[590px] h-auto'>{article.title}</h1>
+                                  <h3 className='font-normal text-base w-[550px]'>{article.author}</h3>
+                                  <p className='text-gray-400 font-bold mt-4'>{article.year}</p>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </>
+                    )
+                    :
+                    (
+                      <>
+                        <div className="flex h-[500px] align-middle justify-center items-center">
+                          <h1 className='font-bold text-2xl'>Tidak ada data!</h1>
+                        </div>
+                      </>
+                    )
+                }
+              </>
             )
         }
       </section>
