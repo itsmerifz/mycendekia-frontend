@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useRecoilState } from 'recoil'
+import { tokenState, userState } from '../../atoms/userAtom'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.css'
 import withReactContent from 'sweetalert2-react-content'
@@ -16,25 +18,18 @@ const Toast = MySwal.mixin({
 })
 
 export default function Dashboard() {
-  const [token, setToken] = useState('')
-  const [user, setUser] = useState({})
+  const [token, setToken] = useRecoilState(tokenState)
+  const [user, setUser] = useRecoilState(userState)
 
   const navigate = useNavigate()
-
-  useEffect(() => {
-    setToken(localStorage.getItem('token'))
-    setUser(JSON.parse(localStorage.getItem('user')))
-  }, [token])
-
-  if (!token) {
-    navigate('/login')
-  }
 
   const handleLogout = () => {
     logoutUser().then(() => {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      navigate('/login')
+      setToken('')
+      setUser({})
+      navigate('../login')
 
       Toast.fire({
         icon: 'warning',
@@ -44,8 +39,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className='flex gap-4 mt-3 ml-3'>
-      <h1>Selamat Datang, {user.name}</h1>
+    <div className='flex'>
+      <h1>Selamat Datang, {user?.name}</h1>
       <button className='w-20 h-11 bg-red-500 text-white rounded-lg' onClick={handleLogout}>Keluar</button>
     </div>
   )

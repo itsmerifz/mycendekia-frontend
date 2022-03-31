@@ -6,7 +6,7 @@ import App from './App'
 import Search from './search'
 import Login from './login'
 import Register from './register'
-import Dashboard from './dashboard'
+import Dashboard from './dashboard/dashboardRouter'
 import { RecoilRoot } from 'recoil'
 
 ReactDOM.render(
@@ -19,7 +19,7 @@ ReactDOM.render(
           <Route path='/search' element={<Search />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/dashboard/*' element={<Dashboard />} />
         </Switch>
       </BrowserRouter>
     </RecoilRoot>
