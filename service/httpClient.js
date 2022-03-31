@@ -1,11 +1,12 @@
 import getBaseAPI from "./getBaseAPI";
 
-export const getAllUsers = async () =>{
-  return await getBaseAPI().get("/users");
-} 
+
+export const getUsers = async () => {
+  return await getBaseAPI.get('/users');
+}
 
 export const getUser = async () => {
-  return await getBaseAPI().get('/users/get-user');
+  return await getBaseAPI.get('/users/get-user');
 }
 
 export const createUser = async (nama, email, password, passwordConf) => {
@@ -38,6 +39,10 @@ export const deleteUser = async id => {
 
 export const changePassword = async id => {
   return await getBaseAPI.patch(`/users/change-password/${id}`);
+}
+
+export const getArticles = async () => {
+  return await getBaseAPI.get('/articles');
 }
 
 export const addArticle = async () => {

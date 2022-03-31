@@ -10,7 +10,7 @@ export default function NavLink({ to, children }) {
 
   return (
     <Nav to={to} className={match ? `text-lime-500 rounded-lg` : `text-gray-500`}>
-      <button className="flex gap-4 items-center font-semibold w-44 h-10 p-3 transition-colors">
+      <button className="flex gap-4 items-center font-semibold w-44 h-10 p-3 transition-colors hover:text-lime-500">
         {children}
       </button>
     </Nav>

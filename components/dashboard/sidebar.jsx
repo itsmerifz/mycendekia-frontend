@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import NavLink from './navLinks'
+import { Link } from 'react-router-dom'
 import { HiHome, HiUser } from 'react-icons/hi'
 import { MdArticle } from 'react-icons/md'
 
@@ -8,7 +9,11 @@ export default function Sidebar() {
   return (
     <div className='bg-gray-50 h-screen overflow-y-scroll scrollbar-hide max-w-[15rem] p-5 text-lime-500 shadow'>
       <div className='space-y-4'>
-        <h1 className='font-bold text-3xl pb-7 border-b border-gray-200'>myCendekia</h1>
+        <h1 className='font-bold text-3xl pb-7 border-b border-gray-200 hover:cursor-default'>
+          <Link to='/'>
+            myCendekia
+          </Link>
+        </h1>
 
         <div className='space-y-6 pt-10'>
           <div className="flex flex-col gap-5">

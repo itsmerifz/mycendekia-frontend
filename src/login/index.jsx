@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import LoginImg from '../../assets/login-office.jpeg'
 import moment from 'moment'
@@ -7,6 +7,7 @@ import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.css'
 import withReactContent from 'sweetalert2-react-content'
 import { BeatLoader } from 'react-spinners'
+
 
 const MySwal = withReactContent(Swal)
 
@@ -23,9 +24,17 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isFetching, setIsFetching] = useState(false)
+  const user = localStorage.getItem('user')
+  const token = localStorage.getItem('token')
 
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if(user && token){
+      navigate('/dashboard')
+    }
+  }, [])
+  
   const handleLogin = e => {
     e.preventDefault();
 

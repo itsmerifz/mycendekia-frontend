@@ -10,6 +10,8 @@ export default function Search() {
   const [search, setSearch] = useRecoilState(searchState)
   const [articles, setArticles] = useState([])
   const [lengthFound, setLengthFound] = useState(0)
+  const token = localStorage.getItem('token')
+  const user = localStorage.getItem('user')
 
   useEffect(() => {
     console.log(search);
@@ -57,16 +59,31 @@ export default function Search() {
             </div>
           </div>
           <ul className="flex justify-between items-center font-semibold">
-            <li className="mr-4">
-              <Link to='/login' className="text-gray-700 hover:text-lime-400 transition-all transform">
-                Masuk
-              </Link>
-            </li>
-            <li className="mr-4">
-              <Link to='/register' className="text-gray-700 hover:text-lime-400 transition-all transform">
-                Daftar
-              </Link>
-            </li>
+            {
+              token && user ?
+                (
+                  <>
+                    <li className="mr-4">
+                      <Link to='/dashboard' className="text-gray-500 hover:text-lime-400 transition-all">
+                        Dashboard
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li className="mr-4">
+                      <Link to='/login' className="text-gray-500 hover:text-lime-400 transition-all">
+                        Masuk
+                      </Link>
+                    </li>
+                    <li className="mr-4">
+                      <Link to='/register' className="text-gray-500 hover:text-lime-400 transition-all">
+                        Daftar
+                      </Link>
+                    </li>
+                  </>
+                )
+            }
           </ul>
         </div>
       </nav>

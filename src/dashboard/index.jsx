@@ -1,47 +1,36 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useRecoilState } from 'recoil'
-import { tokenState, userState } from '../../atoms/userAtom'
-import Swal from 'sweetalert2'
-import 'sweetalert2/dist/sweetalert2.css'
-import withReactContent from 'sweetalert2-react-content'
-import { logoutUser } from '../../service/httpClient'
-
-const MySwal = withReactContent(Swal)
-
-const Toast = MySwal.mixin({
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true
-})
+import CardStats from '../../components/dashboard/cardStatsDashboard'
+import Headers from '../../components/dashboard/header'
+import { getUsers, getArticles } from '../../service/httpClient'
+import { HiUser } from 'react-icons/hi'
+import { MdArticle } from 'react-icons/md'
 
 export default function Dashboard() {
-  const [token, setToken] = useRecoilState(tokenState)
-  const [user, setUser] = useRecoilState(userState)
+  const [users, setUsers] = useState(0)
+  const [articles, setArticles] = useState(0)
 
-  const navigate = useNavigate()
-
-  const handleLogout = () => {
-    logoutUser().then(() => {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      setToken('')
-      setUser({})
-      navigate('../login')
-
-      Toast.fire({
-        icon: 'warning',
-        title: <p>Logged out successfully</p>,
+  useEffect(() => {
+    getUsers()
+      .then(res => {
+        setUsers(res.data.data.length)
       })
-    })
-  }
+    getArticles()
+      .then(res => {
+        setArticles(res.data.data.length)
+      })
+  }, [])
 
   return (
-    <div className='flex'>
-      <h1>Selamat Datang, {user?.name}</h1>
-      <button className='w-20 h-11 bg-red-500 text-white rounded-lg' onClick={handleLogout}>Keluar</button>
+    <div className='flex-1 w-full h-screen bg-gray-300'>
+      <Headers />
+      <div className='inline-block p-5 pb-0'>
+        <h1 className='font-bold text-2xl text-gray-600'>Dashboard</h1>
+      </div>
+      <div className='flex flex-row gap-10 p-10 items-center justify-center'>
+        <CardStats count={users} title="Users" icon={<HiUser />} color='bg-blue-500' />
+        <CardStats count={articles} title="Articles" icon={<MdArticle />} color='bg-red-500' />
+      </div>
     </div>
   )
 }
