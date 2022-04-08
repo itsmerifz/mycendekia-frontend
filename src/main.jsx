@@ -8,6 +8,7 @@ import Login from './login'
 import Register from './register'
 import Dashboard from './dashboard/dashboardRouter'
 import { RecoilRoot } from 'recoil'
+import ChangePass from './change-password'
 
 ReactDOM.render(
   <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.render(
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/dashboard/*' element={<Dashboard />} />
+          <Route path='/change-password' element={<ChangePass />} />
         </Switch>
       </BrowserRouter>
     </RecoilRoot>

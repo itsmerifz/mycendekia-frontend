@@ -19,7 +19,7 @@ export const createUser = async (nama, email, password, passwordConf) => {
 }
 
 export const loginUser = async (email, password) => {
-  return await getBaseAPI.post('/login/signin', {
+  return await getBaseAPI.post('/login/', {
     email: email,
     password: password
   });
@@ -37,8 +37,15 @@ export const deleteUser = async id => {
   return await getBaseAPI.delete(`/users/delete/${id}`);
 }
 
-export const changePassword = async id => {
-  return await getBaseAPI.patch(`/users/change-password/${id}`);
+export const changePassword = async (id, password, passwordConf) => {
+  return await getBaseAPI.patch(`/users/change-password/${id}`, {
+    password: password,
+    passwordConf: passwordConf
+  }, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('encodedToken')}`
+    }
+  })
 }
 
 export const getArticles = async () => {

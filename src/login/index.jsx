@@ -6,6 +6,7 @@ import { loginUser } from '../../service/httpClient'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.css'
 import withReactContent from 'sweetalert2-react-content'
+import jwtDecode from 'jwt-decode'
 import { BeatLoader } from 'react-spinners'
 
 
@@ -42,9 +43,11 @@ export default function Login() {
     if (email !== '' && password !== '') {
       loginUser(email, password)
         .then(res => {
-          console.log(res.data)
-          localStorage.setItem('token', res.data.token)
-          localStorage.setItem('user', JSON.stringify(res.data.user))
+          console.log(res)
+          
+          localStorage.setItem('token', JSON.stringify(jwtDecode(res.data.data.token)))
+          localStorage.setItem('encodedToken', res.data.data.token)
+          localStorage.setItem('user', JSON.stringify(res.data.data.user))
           setIsFetching(false)
           navigate('/dashboard')
         })
@@ -63,7 +66,6 @@ export default function Login() {
       })
       setIsFetching(false)
     }
-
   }
 
   return (

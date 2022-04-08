@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil"
 import { tokenState, userState } from "../../atoms/userAtom"
 import { Routes as Switch, Route } from "react-router-dom"
 import { useNavigate } from 'react-router-dom'
+import moment from "moment"
 import Sidebar from "../../components/dashboard/sidebar"
 import Dashboard from "./"
 import Articles from "./articles"
@@ -19,9 +20,26 @@ export default function dashboardRouter() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    setToken(localStorage.getItem('token'))
+    setToken(JSON.parse(localStorage.getItem('token')))
     setUser(JSON.parse(localStorage.getItem('user')))
-  }, [token])
+    getTokenExpired()
+  }, [])
+  
+  const getTokenExpired = () => {
+    const token = JSON.parse(localStorage.getItem('token'))
+    const now = moment().unix()
+    console.log(now > token.exp);
+    
+    if(!token && !user){
+      return null
+    }
+
+    if(now > token.exp){
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      navigate('/login')
+    }
+  }
 
   if (!token && !user) {
     navigate('../login')

@@ -45,13 +45,19 @@ export default function HeaderDashboard() {
 
   })
 
+  const handleChangePass = () => {
+    navigate(`/change-password?id=${user.id}`)
+    return <ChangePass />
+  }
+
   const handleLogout = () => {
     logoutUser().then(() => {
       localStorage.removeItem('token')
+      localStorage.removeItem('encodedToken')
       localStorage.removeItem('user')
       setToken('')
       setUser({})
-      navigate('../login')
+      navigate('/login')
 
       Toast.fire({
         icon: 'warning',
@@ -84,7 +90,7 @@ export default function HeaderDashboard() {
               <div className="p-2">
                 <Menu.Item>
                   {({ active }) => (
-                    <button className={`${active ? 'bg-lime-500 text-white' : 'text-lime-500'} group flex gap-6 rounded-md items-center w-full p-2 text-sm font-semibold`}>
+                    <button onClick={handleChangePass} className={`${active ? 'bg-lime-500 text-white' : 'text-lime-500'} group flex gap-6 rounded-md items-center w-full p-2 text-sm font-semibold`}>
                       <HiKey className='text-lg' />
                       Ganti Password
                     </button>
