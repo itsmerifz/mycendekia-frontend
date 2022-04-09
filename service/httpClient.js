@@ -56,8 +56,14 @@ export const getArticles = async () => {
   return await getBaseAPI.get('/articles');
 }
 
-export const addArticle = async () => {
-  return await getBaseAPI.post('/articles/add-article');
+export const addArticle = async (title, content, year, author, link) => {
+  return await getBaseAPI.post('/articles/add-article', {
+    title: title,
+    content: content,
+    year: year,
+    author: author,
+    link: link
+  });
 }
 
 export const updateArticle = async id => {

@@ -18,7 +18,7 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="scrollbar-hide">
       {/* Navbar */}
       <nav className='bg-white text-gray-700 hover:text-lime-400 px-2 py-4 rounded'>
         <div className="container flex flex-wrap justify-between items-center mx-auto">
