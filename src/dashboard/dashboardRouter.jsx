@@ -20,13 +20,13 @@ export default function dashboardRouter() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    setToken(JSON.parse(localStorage.getItem('token')))
+    setToken(localStorage.getItem('token'))
     setUser(JSON.parse(localStorage.getItem('user')))
     getTokenExpired()
   }, [])
   
   const getTokenExpired = () => {
-    const token = JSON.parse(localStorage.getItem('token'))
+    const token = JSON.parse(localStorage.getItem('user'))
     const now = moment().unix()
     console.log(now > token.exp);
     

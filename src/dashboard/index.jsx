@@ -13,11 +13,12 @@ export default function Dashboard() {
   useEffect(() => {
     getUsers()
       .then(res => {
-        setUsers(res.data.data.length)
+        setUsers(res.data.total)
       })
     getArticles()
       .then(res => {
-        setArticles(res.data.data.length)
+        console.log(res);
+        setArticles(res.data.totalData)
       })
   }, [])
 

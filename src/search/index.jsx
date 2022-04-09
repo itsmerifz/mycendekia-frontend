@@ -20,9 +20,15 @@ export default function Search() {
     if (search !== '') {
       searchArticle(search)
         .then(res => {
+          console.log(res);
           setArticles(res.data.data)
           setLengthFound(res.data.data.length)
           setIsLoading(false)
+        })
+        .catch(err => {
+          console.log(err.response)
+          setIsLoading(false)
+          setLengthFound(0)
         })
     }
   }, [])
@@ -34,8 +40,17 @@ export default function Search() {
       searchArticle(search)
         .then(res => {
           setArticles(res.data.data)
-          setLengthFound(res.data.data.length)
+          if(!res.data){
+            setLengthFound(0)
+          }else{
+            setLengthFound(res.data.data.length)
+          }
           setIsLoading(false)
+        })
+        .catch(err => {
+          console.log(err.response)
+          setIsLoading(false)
+          setLengthFound(0)
         })
     }
   }

@@ -10,7 +10,7 @@ import { HiKey, HiLogout } from 'react-icons/hi'
 import { Menu, Transition } from '@headlessui/react'
 import { useRecoilState } from 'recoil'
 import { tokenState, userState } from '../../atoms/userAtom'
-
+import ChangePass from '../../src/change-password'
 
 
 const MySwal = withReactContent(Swal)
@@ -51,7 +51,7 @@ export default function HeaderDashboard() {
   }
 
   const handleLogout = () => {
-    logoutUser().then(() => {
+    logoutUser().then((res) => {
       localStorage.removeItem('token')
       localStorage.removeItem('encodedToken')
       localStorage.removeItem('user')
@@ -61,7 +61,7 @@ export default function HeaderDashboard() {
 
       Toast.fire({
         icon: 'warning',
-        title: <p>Logged out successfully</p>,
+        title: <p>{res.data.message}</p>,
       })
     })
   }

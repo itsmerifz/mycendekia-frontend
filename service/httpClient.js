@@ -2,7 +2,11 @@ import getBaseAPI from "./getBaseAPI";
 
 
 export const getUsers = async () => {
-  return await getBaseAPI.get('/users');
+  return await getBaseAPI.get('/users', {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+  });
 }
 
 export const getUser = async () => {
@@ -43,7 +47,7 @@ export const changePassword = async (id, password, passwordConf) => {
     passwordConf: passwordConf
   }, {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('encodedToken')}`
+      Authorization: `Bearer ${localStorage.getItem('token')}`
     }
   })
 }

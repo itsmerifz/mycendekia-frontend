@@ -44,10 +44,8 @@ export default function Login() {
       loginUser(email, password)
         .then(res => {
           console.log(res)
-          
-          localStorage.setItem('token', JSON.stringify(jwtDecode(res.data.data.token)))
-          localStorage.setItem('encodedToken', res.data.data.token)
-          localStorage.setItem('user', JSON.stringify(res.data.data.user))
+          localStorage.setItem('user', JSON.stringify(jwtDecode(res.data.token)))
+          localStorage.setItem('token', res.data.token)
           setIsFetching(false)
           navigate('/dashboard')
         })
