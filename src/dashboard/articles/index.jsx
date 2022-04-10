@@ -33,7 +33,7 @@ export default function Articles() {
     getArticles().then((res) => {
       setArticles(res.data.data)
     })
-  }, [])
+  }, [articles])
 
 
   const handleAddArticle = e => {
@@ -106,7 +106,9 @@ export default function Articles() {
 
       {/* List Article */}
       <div className="mt-5 p-3 w-full relative overflow-x-auto items-center justify-center flex">
-        <table>
+        {
+          articles.length > 0 ? (
+            <table className='rounded'>
           <thead className='uppercase bg-gray-600 text-white'>
             <tr>
               <th scope='col' className='px-3 py-2 border'>
@@ -129,15 +131,13 @@ export default function Articles() {
               </th>
             </tr>
           </thead>
-          <tbody className='border px-3 py-2 w-24 h-auto'>
+          <tbody className='border px-3 py-2 w-24 h-auto bg-gray-400'>
             {
-              articles.length > 0 ?
-
               articles.map((article, index) => {
                 return (
                   <tr key={index}>
                     <td className='border px-3 py-2'>
-                      <div className="flex justify-center items-center">
+                      <div className="flex justify-center items-center font-semibold">
                         {index + 1}
                       </div>
                     </td>
@@ -153,7 +153,7 @@ export default function Articles() {
                     </td>
                     <td className='border px-3 py-2'>
                       <div className="flex items-center gap-6 justify-center">
-                        <button className='w-auto h-10 text-lime-500 hover:text-lime-600 transition text-2xl' type='button'>
+                        <button className='w-auto h-10 text-lime-300 hover:text-lime-400 transition text-2xl' type='button'>
                           <FaEdit />
                         </button>
                         <button className='w-auto h-10 text-red-500 hover:text-red-600 transition text-2xl' type='button' onClick={() => handleDeleteArticle(article._id)}>
@@ -164,15 +164,19 @@ export default function Articles() {
                   </tr>
                 )
               })
-              :
-              <tr>
-                <td colSpan='6' className='border px-3 py-2'>
-                  <p className='text-center text-gray-600'>Tidak ada artikel</p>
-                </td>
-              </tr>
             }
           </tbody>
         </table>
+          )
+          :
+          (
+            <div className='flex justify-center items-center'>
+              <div className='w-full mt-9'>
+                <p className='text-center text-3xl font-semibold text-gray-600'>Tidak ada artikel</p>
+              </div>
+            </div>
+          )
+        }
       </div>
 
       {/* Modal Add Articles */}

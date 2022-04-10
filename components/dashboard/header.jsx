@@ -24,9 +24,10 @@ const Toast = MySwal.mixin({
 })
 
 const times = [
-  [0, 11, "Good Morning, "],
-  [12, 17, "Good Afternoon, "],
-  [18, 23, "Good Evening, "]
+  [0, 11, "Selamat Pagi, "],
+  [12, 14, "Selamat Siang, "],
+  [15, 17, "Selamat Sore, "],
+  [18, 23, "Selamat Malam, "]
 ]
 
 export default function HeaderDashboard() {
@@ -53,7 +54,6 @@ export default function HeaderDashboard() {
   const handleLogout = () => {
     logoutUser().then((res) => {
       localStorage.removeItem('token')
-      localStorage.removeItem('encodedToken')
       localStorage.removeItem('user')
       setToken('')
       setUser({})
