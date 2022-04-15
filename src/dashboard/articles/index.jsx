@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Header from '../../../components/dashboard/header'
+import { cloneDeep } from 'lodash'
+import { useRecoilState } from "recoil"
+import { articlesState } from "../../../atoms/dataAtom"
+import Pagination from 'rc-pagination'
+import "rc-pagination/assets/index.css";
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.css'
 import withReactContent from 'sweetalert2-react-content'
 import { BeatLoader } from 'react-spinners'
 import { BiPlus } from 'react-icons/bi'
-import { FaTrash, FaEdit } from 'react-icons/fa'
+import { FaTrash, FaEdit, FaSearch } from 'react-icons/fa'
 import { Transition, Dialog } from '@headlessui/react'
 import { addArticle, getArticles, deleteArticle } from '../../../service/httpClient'
 
@@ -20,7 +25,12 @@ const Toast = MySwal.mixin({
 })
 
 export default function Articles() {
-  const [articles, setArticles] = useState([])
+  const limit = 5
+  const [articles, setArticles] = useRecoilState(articlesState)
+  const [data, setData] = useState(cloneDeep(articles.slice(0, limit)))
+  const [total, setTotal] = useState(0)
+  const [searchValue, setSearchValue] = useState('')
+  const [currPage, setCurrPage] = useState(1)
   const [isFetching, setIsFetching] = useState(false)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -33,8 +43,38 @@ export default function Articles() {
     getArticles().then((res) => {
       setArticles(res.data.data)
     })
-  }, [articles])
+  }, [])
 
+
+  const searchDataTable = e => {
+    e.preventDefault()
+
+    const search = articles.filter(item => {
+      return item.title.toLowerCase().includes(searchValue.toLowerCase())
+    })
+    
+    setData(search)
+
+    if (search.length === 0) {
+      MySwal.fire({
+        icon: 'error',
+        title: 'Data tidak ditemukan!',
+        confirmButtonColor: '#58ee1d',
+      })
+      .then(() => {
+        setSearchValue('')
+        setData(articles.slice(0, limit))
+      })
+    }
+  }
+
+  const updatePage = page => {
+    setCurrPage(page)
+    const end = limit * page
+    const start = end - limit
+    setData(cloneDeep(articles.slice(start, end)))
+    setTotal(Math.ceil(articles.length / limit))
+  }
 
   const handleAddArticle = e => {
     e.preventDefault();
@@ -78,24 +118,24 @@ export default function Articles() {
       cancelButtonColor: '#5e5e5e',
       confirmButtonText: 'Ya, hapus!',
     })
-    .then((result) => {
-      if(result.isConfirmed){
-        deleteArticle(id)
-        .then((res) => {
-          MySwal.fire({
-            icon: 'success',
-            title: res.data.message,
-          })
-          getArticles().then((res) => {
-            setArticles(res.data.data)
-          })
-        })
-      }
-    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          deleteArticle(id)
+            .then((res) => {
+              MySwal.fire({
+                icon: 'success',
+                title: res.data.message,
+              })
+              getArticles().then((res) => {
+                setArticles(res.data.data)
+              })
+            })
+        }
+      })
   }
 
   return (
-    <div className='flex-1 w-full h-screen bg-gray-300 max-w-7xl'>
+    <div className='flex-grow h-screen bg-gray-300 '>
       <Header />
       <div className='flex items-center justify-between p-5 pb-0'>
         <h1 className='font-bold text-2xl text-gray-600'>Daftar Artikel</h1>
@@ -104,79 +144,97 @@ export default function Articles() {
         </button>
       </div>
 
+      {/* Search */}
+      <div className='m-4 flex gap-2'>
+        <input type="text" placeholder='Cari Artikel...' className='rounded-md w-52 outline-none p-1 font-semibold focus:ring-2 focus:ring-lime-400 bg-gray-50' value={searchValue} onChange={e => setSearchValue(e.target.value)} />
+        <button className='w-10 flex shadow items-center h-10 justify-center bg-lime-400 hover:bg-lime-500 transition rounded-md text-white' onClick={searchDataTable}>
+          <FaSearch />
+        </button>
+      </div>
+
       {/* List Article */}
-      <div className="mt-5 p-3 w-full relative overflow-x-auto items-center justify-center flex">
+      <div className="mt-5 p-3 w-full relative overflow-x-hidden items-center justify-center flex">
         {
-          articles.length > 0 ? (
+          data.length > 0 ? (
+            // <Table />
             <table className='rounded'>
-          <thead className='uppercase bg-gray-600 text-white'>
-            <tr>
-              <th scope='col' className='px-3 py-2 border'>
-                No.
-              </th>
-              <th scope='col' className='px-3 py-2 border'>
-                Judul
-              </th>
-              <th scope='col' className='px-3 py-2 border'>
-                Author
-              </th>
-              <th scope='col' className='px-3 py-2 border'>
-                Tahun
-              </th>
-              <th scope='col' className='px-3 py-2 border'>
-                Link
-              </th>
-              <th scope='col' className='px-3 py-2 border'>
-                Aksi
-              </th>
-            </tr>
-          </thead>
-          <tbody className='border px-3 py-2 w-24 h-auto bg-gray-400'>
-            {
-              articles.map((article, index) => {
-                return (
-                  <tr key={index}>
-                    <td className='border px-3 py-2'>
-                      <div className="flex justify-center items-center font-semibold">
-                        {index + 1}
-                      </div>
-                    </td>
-                    <td className='border px-3 py-2'>
-                      <p className='truncate w-72'>{article.title}</p>
-                    </td>
-                    <td className='border px-3 py-2'>
-                      <p className='truncate w-72'>{article.author}</p>
-                    </td>
-                    <td className='border px-3 py-2'>{article.year}</td>
-                    <td className='border px-3 py-2'>
-                      <p className='truncate w-48'>{article.link}</p>
-                    </td>
-                    <td className='border px-3 py-2'>
-                      <div className="flex items-center gap-6 justify-center">
-                        <button className='w-auto h-10 text-lime-300 hover:text-lime-400 transition text-2xl' type='button'>
-                          <FaEdit />
-                        </button>
-                        <button className='w-auto h-10 text-red-500 hover:text-red-600 transition text-2xl' type='button' onClick={() => handleDeleteArticle(article._id)}>
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })
-            }
-          </tbody>
-        </table>
+              <thead className='uppercase bg-gray-600 text-white'>
+                <tr>
+                  <th scope='col' className='px-3 py-2 border'>
+                    No.
+                  </th>
+                  <th scope='col' className='px-3 py-2 border'>
+                    Judul
+                  </th>
+                  <th scope='col' className='px-3 py-2 border'>
+                    Author
+                  </th>
+                  <th scope='col' className='px-3 py-2 border'>
+                    Tahun
+                  </th>
+                  <th scope='col' className='px-3 py-2 border'>
+                    Link
+                  </th>
+                  <th scope='col' className='px-3 py-2 border'>
+                    Aksi
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='border px-3 py-2 w-24 h-auto bg-gray-400'>
+                {
+                  data.map((article, index) => {
+                    return (
+                      <tr key={index}>
+                        <td className='border px-3 py-2'>
+                          <div className="flex justify-center items-center font-semibold">
+                            {index + 1}
+                          </div>
+                        </td>
+                        <td className='border px-3 py-2'>
+                          <p className='truncate w-72'>{article.title}</p>
+                        </td>
+                        <td className='border px-3 py-2'>
+                          <p className='truncate w-72'>{article.author}</p>
+                        </td>
+                        <td className='border px-3 py-2'>{article.year}</td>
+                        <td className='border px-3 py-2'>
+                          <p className='truncate w-48'>{article.link}</p>
+                        </td>
+                        <td className='border px-3 py-2'>
+                          <div className="flex items-center gap-6 justify-center">
+                            <button className='w-auto h-10 text-white hover:text-lime-400 transition text-2xl' type='button'>
+                              <FaEdit />
+                            </button>
+                            <button className='w-auto h-10 text-white hover:text-red-600 transition text-2xl' type='button' onClick={() => handleDeleteArticle(article._id)}>
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })
+                }
+              </tbody>
+            </table>
           )
-          :
-          (
-            <div className='flex justify-center items-center'>
-              <div className='w-full mt-9'>
-                <p className='text-center text-3xl font-semibold text-gray-600'>Tidak ada artikel</p>
+            :
+            (
+              <div className='flex justify-center items-center'>
+                <div className='w-full mt-9'>
+                  <p className='text-center text-3xl font-semibold text-gray-600'>Tidak ada artikel</p>
+                </div>
               </div>
-            </div>
-          )
+            )
         }
+      </div>
+      <div className='mt-2 py-2 flex justify-between px-3'>
+        <p className='text-gray-600'>Halaman {currPage} dari {total}</p>
+        <Pagination
+          pageSize={limit}
+          onChange={updatePage}
+          current={currPage}
+          total={articles.length}
+        />
       </div>
 
       {/* Modal Add Articles */}

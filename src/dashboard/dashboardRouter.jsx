@@ -1,8 +1,10 @@
 import { useEffect } from "react"
 import { useRecoilState } from "recoil"
+import { articlesState } from "../../atoms/dataAtom"
 import { tokenState, userState } from "../../atoms/userAtom"
 import { Routes as Switch, Route } from "react-router-dom"
 import { useNavigate } from 'react-router-dom'
+import { getArticles } from "../../service/httpClient"
 import moment from "moment"
 import Sidebar from "../../components/dashboard/sidebar"
 import Dashboard from "./"
@@ -16,10 +18,14 @@ export default function dashboardRouter() {
 
   const [token, setToken] = useRecoilState(tokenState)
   const [user, setUser] = useRecoilState(userState)
+  const [articles, setArticles] = useRecoilState(articlesState)
 
   const navigate = useNavigate()
 
   useEffect(() => {
+    getArticles().then(res => {
+      setArticles(res.data.data)
+    })
     setToken(localStorage.getItem('token'))
     setUser(JSON.parse(localStorage.getItem('user')))
     getTokenExpired()
@@ -28,7 +34,6 @@ export default function dashboardRouter() {
   const getTokenExpired = () => {
     const token = JSON.parse(localStorage.getItem('user'))
     const now = moment().unix()
-    console.log(now > token.exp);
     
     if(!token && !user){
       return null
@@ -46,7 +51,7 @@ export default function dashboardRouter() {
   }
 
   return (
-    <div className="flex">
+    <main className="flex h-screen">
       <Sidebar />
       <Switch>
         <Route path="/" element={<Dashboard />} />
@@ -55,6 +60,6 @@ export default function dashboardRouter() {
         <Route path="/users" element={<Users />} />
         <Route path="/users/edit" element={<EditUsers />} />
       </Switch>
-    </div>
+    </main>
   )
 }
