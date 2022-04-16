@@ -12,6 +12,7 @@ import Articles from "./articles"
 import EditArticles from "./articles/edit"
 import Users from "./users"
 import EditUsers from "./users/edit"
+import Login from "../login"
 
 
 export default function dashboardRouter() {
@@ -35,19 +36,18 @@ export default function dashboardRouter() {
     const token = JSON.parse(localStorage.getItem('user'))
     const now = moment().unix()
     
-    if(!token && !user){
-      return null
+    if(!token){
+      navigate('/login')
+      return <Login />
     }
+
 
     if(now > token.exp){
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       navigate('/login')
+      return <Login />
     }
-  }
-
-  if (!token && !user) {
-    navigate('../login')
   }
 
   return (

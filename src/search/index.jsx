@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useRecoilState } from 'recoil'
 import { searchState } from '../../atoms/searchAtom'
+import { idArticleState } from '../../atoms/dataAtom'
 import { searchArticle } from '../../service/httpClient'
 import { HashLoader } from 'react-spinners'
 import CardResult from '../../components/dashboard/search/cardResult'
@@ -11,6 +12,7 @@ export default function Search() {
   const [search, setSearch] = useRecoilState(searchState)
   const [articles, setArticles] = useState([])
   const [lengthFound, setLengthFound] = useState(0)
+  const [id, setId] = useRecoilState(idArticleState)
   const token = localStorage.getItem('token')
   const user = localStorage.getItem('user')
 
@@ -40,9 +42,9 @@ export default function Search() {
       searchArticle(search)
         .then(res => {
           setArticles(res.data.data)
-          if(!res.data){
+          if (!res.data) {
             setLengthFound(0)
-          }else{
+          } else {
             setLengthFound(res.data.data.length)
           }
           setIsLoading(false)
@@ -112,7 +114,7 @@ export default function Search() {
           isLoading ?
             (
               <div className="flex h-[500px] align-middle justify-center items-center">
-                <HashLoader color={`#84CC16`} size={150} />
+                <HashLoader color='#84CC16' size={150} />
               </div>
             )
             :
@@ -126,7 +128,9 @@ export default function Search() {
                         <div className='flex flex-col items-center justify-center space-y-4'>
                           {articles.map((article) => {
                             return (
-                              <CardResult key={article.id} author={article.author} year={article.year} title={article.title} />
+                              <Link to={`/search/details?id=${article._id}`} onClick={() => setId(article._id)}>
+                                <CardResult key={article._id} author={article.author} year={article.year} title={article.title} />
+                              </Link>
                             )
                           })}
                         </div>

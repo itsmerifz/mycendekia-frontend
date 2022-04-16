@@ -6,6 +6,7 @@ import App from './App'
 import Search from './search'
 import Login from './login'
 import Register from './register'
+import Details from './search/details'
 import Dashboard from './dashboard/dashboardRouter'
 import { RecoilRoot } from 'recoil'
 import ChangePass from './change-password'
@@ -16,8 +17,9 @@ ReactDOM.render(
       <BrowserRouter>
         {/* Routes */}
         <Switch>
-          <Route path='/' element={<App />} />
+          <Route index element={<App />} />
           <Route path='/search' element={<Search />} />
+          <Route path='/search/details' element={<Details />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/dashboard/*' element={<Dashboard />} />
