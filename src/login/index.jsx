@@ -88,13 +88,13 @@ export default function Login() {
                 <div className="mt-3 flex items-center gap-5 justify-evenly">
                   {isFetching ? (
                     <div>
-                      <button type="submit" className="text-white bg-lime-600 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-lime-300 transform transition-all font-medium rounded-lg text-sm px-5 py-2.5 text-center w-20" disabled>
+                      <button type="submit" className="text-white bg-lime-600 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-lime-300 transform transition-all font-medium rounded-lg text-sm px-5 py-2.5 text-center w-20 shadow" disabled>
                         <BeatLoader color='#fff' size={3} />
                       </button>
                     </div>
                   ) : (
                     <div>
-                      <button type="submit" className="text-white bg-lime-600 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-lime-300 transform transition-all font-medium rounded-lg text-sm px-5 py-2.5 text-center w-20" onClick={handleLogin}>Login</button>
+                      <button type="submit" className="text-white bg-lime-600 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-lime-300 transform transition-all font-medium rounded-lg text-sm px-5 py-2.5 text-center w-20 shadow" onClick={handleLogin}>Login</button>
                     </div>
                   )}
                   <Link to="/register" className="text-gray-500 hover:text-lime-500 transform transition-all font-medium text-sm">Register</Link>

@@ -77,3 +77,17 @@ export const deleteArticle = async id => {
 export const searchArticle = async keyword => {
   return await getBaseAPI.get(`/articles/search/${keyword}`);
 }
+
+export const editArticle = async (id, title, content, year, author, link) => {
+  return await getBaseAPI.patch(`/articles/article/${id}`, {
+    title: title,
+    content: content,
+    year: year,
+    author: author,
+    link: link
+  })
+}
+
+export const getOneArticle = async id => {
+  return await getBaseAPI.get(`/articles/article/${id}`);
+}

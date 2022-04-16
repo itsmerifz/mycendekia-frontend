@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Header from '../../../components/dashboard/header'
+import { useNavigate } from 'react-router-dom'
 import { cloneDeep } from 'lodash'
 import { useRecoilState } from "recoil"
-import { articlesState } from "../../../atoms/dataAtom"
+import { articlesState, idArticleState } from "../../../atoms/dataAtom"
 import Pagination from 'rc-pagination'
 import "rc-pagination/assets/index.css";
 import Swal from 'sweetalert2'
@@ -38,10 +39,13 @@ export default function Articles() {
   const [year, setYear] = useState('')
   const [link, setLink] = useState('')
   const [modal, setModal] = useState(false)
+  const [id, setId] = useRecoilState(idArticleState)
+  const navigate = useNavigate()
 
   useEffect(() => {
     getArticles().then((res) => {
       setArticles(res.data.data)
+      setTotal(Math.ceil(articles.length / limit))
     })
   }, [])
 
@@ -52,7 +56,7 @@ export default function Articles() {
     const search = articles.filter(item => {
       return item.title.toLowerCase().includes(searchValue.toLowerCase())
     })
-    
+
     setData(search)
 
     if (search.length === 0) {
@@ -61,10 +65,10 @@ export default function Articles() {
         title: 'Data tidak ditemukan!',
         confirmButtonColor: '#58ee1d',
       })
-      .then(() => {
-        setSearchValue('')
-        setData(articles.slice(0, limit))
-      })
+        .then(() => {
+          setSearchValue('')
+          setData(articles.slice(0, limit))
+        })
     }
   }
 
@@ -73,7 +77,6 @@ export default function Articles() {
     const end = limit * page
     const start = end - limit
     setData(cloneDeep(articles.slice(start, end)))
-    setTotal(Math.ceil(articles.length / limit))
   }
 
   const handleAddArticle = e => {
@@ -126,16 +129,19 @@ export default function Articles() {
                 icon: 'success',
                 title: res.data.message,
               })
-              getArticles().then((res) => {
-                setArticles(res.data.data)
-              })
+              updatePage(1)
             })
         }
       })
   }
 
+  const navigateEdit = id => {
+    setId(id)
+    navigate('/dashboard/articles/edit')
+  }
+
   return (
-    <div className='flex-grow h-screen bg-gray-300 '>
+    <div className='flex-grow h-screen bg-gray-300'>
       <Header />
       <div className='flex items-center justify-between p-5 pb-0'>
         <h1 className='font-bold text-2xl text-gray-600'>Daftar Artikel</h1>
@@ -202,7 +208,7 @@ export default function Articles() {
                         </td>
                         <td className='border px-3 py-2'>
                           <div className="flex items-center gap-6 justify-center">
-                            <button className='w-auto h-10 text-white hover:text-lime-400 transition text-2xl' type='button'>
+                            <button className='w-auto h-10 text-white hover:text-lime-400 transition text-2xl' type='button' onClick={() => navigateEdit(article._id)}>
                               <FaEdit />
                             </button>
                             <button className='w-auto h-10 text-white hover:text-red-600 transition text-2xl' type='button' onClick={() => handleDeleteArticle(article._id)}>
