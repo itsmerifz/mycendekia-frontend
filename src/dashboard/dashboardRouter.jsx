@@ -11,7 +11,6 @@ import Dashboard from "./"
 import Articles from "./articles"
 import EditArticles from "./articles/edit"
 import Users from "./users"
-import EditUsers from "./users/edit"
 import Login from "../login"
 
 
@@ -54,11 +53,10 @@ export default function dashboardRouter() {
     <main className="flex h-screen">
       <Sidebar />
       <Switch>
-        <Route path="/" element={<Dashboard />} />
+        <Route index element={<Dashboard />} />
         <Route path="/articles" element={<Articles />} />
         <Route path="/articles/edit" element={<EditArticles />} />
         <Route path="/users" element={<Users />} />
-        <Route path="/users/edit" element={<EditUsers />} />
       </Switch>
     </main>
   )

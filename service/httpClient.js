@@ -10,7 +10,11 @@ export const getUsers = async () => {
 }
 
 export const getUser = async () => {
-  return await getBaseAPI.get('/users/get-user');
+  return await getBaseAPI.get('/users/user', {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+  });
 }
 
 export const createUser = async (nama, email, password, passwordConf) => {
@@ -33,8 +37,16 @@ export const logoutUser = async () => {
   return await getBaseAPI.post('/login/signout');
 }
 
-export const updateUser = async id => {
-  return await getBaseAPI.patch(`/users/update/${id}`);
+export const updateUser = async (id, name, email, image) => {
+  return await getBaseAPI.patch(`/users/update/${id}`, {
+    name: name,
+    email: email,
+    image: image
+  }, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+  });
 }
 
 export const deleteUser = async id => {
