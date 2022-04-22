@@ -30,21 +30,35 @@ export default function User() {
     getUser().then(res => {
       console.log(res.data);
       setUser(res.data.data)
+      setName(res.data.data.name)
+      setEmail(res.data.data.email)
     })
-    console.log(image);
   }, [])
 
   const handleUpdateUser = e => {
     e.preventDefault()
 
+    let fd = new FormData()
+    fd.append('name', name)
+    fd.append('email', email)
+    image === undefined ? null : fd.append('image', image)
+
     setIsFetching(true)
-    updateUser(user._id, name, email, image).then(res => {
+    updateUser(user._id, fd).then(res => {
       console.log(res.data);
       Toast
         .fire({
           icon: 'success',
           title: res.data.message
         })
+    })
+    
+    getUser().then(res => {
+      let user = JSON.parse(localStorage.getItem('user'))
+      user.name = res.data.data.name
+      user.email = res.data.data.email
+      user.image = res.data.data.image
+      localStorage.setItem('user', JSON.stringify(user))
     })
   }
 
@@ -67,18 +81,18 @@ export default function User() {
           <div className="flex p-5 gap-8">
             <div className="flex flex-col w-80 space-y-3">
               <label htmlFor="name" className='font-semibold text-gray-800'>Nama</label>
-              <input type="text" value={user.name} onChange={e => setName(e.target.value)} placeholder='Masukkan Nama...' className='p-3 text-sm outline-none rounded focus:ring-lime-500 focus:ring-2 shadow' />
+              <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder='Masukkan Nama...' className='p-3 text-sm outline-none rounded focus:ring-lime-500 focus:ring-2 shadow' />
             </div>
             <div className="flex flex-col w-80 space-y-3">
               <label htmlFor="name" className='font-semibold text-gray-800'>Email</label>
-              <input type="text" value={user.email} onChange={e => setEmail(e.target.value)} placeholder='Masukkan Nama...' className='p-3 text-sm outline-none rounded focus:ring-lime-500 focus:ring-2 shadow' />
+              <input type="text" value={email} onChange={e => setEmail(e.target.value)} placeholder='Masukkan Nama...' className='p-3 text-sm outline-none rounded focus:ring-lime-500 focus:ring-2 shadow' />
             </div>
           </div>
           <div className="flex p-5 gap-8">
             <div className="flex flex-col space-y-3">
               <label htmlFor="name" className='font-semibold text-gray-800'>Foto</label>
               <div className='flex gap-8'>
-                <input accept='image/*' type="file" onChange={e => setImage(e.target.files[0])} className='p-3 text-sm outline-none block text-white bg-gray-500 rounded-lg cursor-pointer border' />
+                <input accept='image/*' name='image' type="file" onChange={e => setImage(e.target.files[0])} className='p-3 text-sm outline-none block text-white bg-gray-500 rounded-lg cursor-pointer border' />
                 {
                   image ? <img src={URL.createObjectURL(image)} alt='user' className='w-32 h-32 rounded-full' /> : user.image ? <img src={`http://localhost:3911/assets/${user.image}`} alt='user' className='w-32 h-32 rounded-full' /> : <img src='https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=20&m=1223671392&s=612x612&w=0&h=lGpj2vWAI3WUT1JeJWm1PRoHT3V15_1pdcTn2szdwQ0=' alt='user' className='w-32 h-32 rounded-full' />
                 }

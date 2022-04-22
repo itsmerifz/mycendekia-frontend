@@ -37,14 +37,12 @@ export const logoutUser = async () => {
   return await getBaseAPI.post('/login/signout');
 }
 
-export const updateUser = async (id, name, email, image) => {
-  return await getBaseAPI.patch(`/users/update/${id}`, {
-    name: name,
-    email: email,
-    image: image
-  }, {
+export const updateUser = async (id, fd) => {
+  
+  return await getBaseAPI.patch(`/users/update/${id}`, fd, {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'multipart/form-data'
     }
   });
 }
